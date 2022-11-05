@@ -226,13 +226,107 @@ app.get('/contact_table/contact_name/:contact_name', (req,res) => {
     })
 })
 
-//get data from contact table by device_id
-app.get('/')
+//get data from call_history_table by user_id
+app.get('/call_history_table/user_id/:user_id', (req,res) => {
+    pool.getConnection((err, connection) => {
+        if(err) throw err
+        connection.query('SELECT * FROM call_history_table where user_id = ?', [req.params.user_id], (err, rows) => {
+            connection.release()
+        if(!err)
+        {
+            res.send(rows)
+        }
+        else
+        {
+
+            console.log(err)
+        }
+        console.log('the data from history table are : \n', rows);
+        })
+    })
+})
 
 
+//get data from call_history_table by to contact_id
 
+app.get('/call_history_table/tocontact_id/:tocontact_id', (req,res) => {
+    pool.getConnection((err, connection) => {
+        if(err) throw err
+        connection.query('SELECT * FROM call_history_table where tocontact_id = ?', [req.params.tocontact_id], (err, rows) => {
+            connection.release()
+        if(!err)
+        {
+            res.send(rows)
+        }
+        else
+        {
 
+            console.log(err)
+        }
+        console.log('the data from history table are : \n', rows);
+        })
+    })
+})
+//get data from call_history_table by from contact_id
 
+app.get('/call_history_table/fromcontact_id/:fromcontact_id', (req,res) => {
+    pool.getConnection((err, connection) => {
+        if(err) throw err
+        connection.query('SELECT * FROM call_history_table where fromcontact_id = ?', [req.params.fromcontact_id], (err, rows) => {
+            connection.release()
+        if(!err)
+        {
+            res.send(rows)
+        }
+        else
+        {
+
+            console.log(err)
+        }
+        console.log('the data from history table are : \n', rows);
+        })
+    })
+})
+
+// put data to call history table 
+app.post('/call_history_table/sumbit_data', (req, res) => {
+
+    pool.getConnection((err, connection) => {
+        if(err) throw err
+        console.log(`connected as id ${connection.threadId}`)
+        const params = req.body
+        connection.query('INSERT INTO call_history_table SET ?', params, (err, rows) => {
+        connection.release() // return the connection to pool
+        if (!err) {
+            res.send(`the contact with user id :: ${params.user_id} has been added`)
+        } else {
+            console.log(err)
+        }
+        
+        })
+        console.log(req.body)
+
+    })
+});
+// sumbit new contact data to contact table
+app.post('/contact_table/sign_up', (req, res) => {
+    pool.getConnection((err, connection) => {
+        if(err) throw err
+        console.log(`connected as id ${connection.threadId}`)
+        const params = req.body
+        connection.query('INSERT INTO contact_table SET ?', params, (err, rows) => {
+            connection.release() // return the connection pool
+            if(!err) {
+                res.send(`the contact with user id :: ${params.user_id} has been added`)
+            }else {
+                console.log(err)
+            }
+        })
+        console.log(req.body)
+    })
+});
+
+//login 
 
 
 
